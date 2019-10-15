@@ -1,0 +1,132 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="讓失眠的大家能有一個聊天的地方,進來看看吧!">
+    <title>失眠聊天室</title>
+    <link rel="stylesheet" type="text/css" href="login.css">
+    <style type="text/css">
+
+    </style>
+
+</head>
+
+<body>
+    <div>
+        歡迎~ 目前只開放fb登入 與 google 登入 ~<br>
+    </div>
+    <!-- 帳號密碼登入
+    <div>
+        輸入帳號 : <input id="mail" type="email">
+    </div>
+    <div>
+        輸入密碼 : <input id="password" type="password">
+        <button id="btnLogIn">登入</button>
+    </div>
+    <button id="btnSingUp">註冊</button><br>
+-->
+
+    <button id="googleSingUpPopup" class="google">Google登入</button>
+    <button id="facebookSingUpPopup" class="fb">FB登入</button>
+
+</body>
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.2.0/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/7.2.0/firebase-analytics.js"></script>
+<!-- Add Firebase products that you want to use -->
+<script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-auth.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-database.js"></script>
+
+<script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+        apiKey: "AIzaSyACTHxmpvMeD_i7AIO71Y3k4j03y4D24ZU",
+        authDomain: "cantsleep-f8b26.firebaseapp.com",
+        databaseURL: "https://cantsleep-f8b26.firebaseio.com",
+        projectId: "cantsleep-f8b26",
+        storageBucket: "cantsleep-f8b26.appspot.com",
+        messagingSenderId: "101979891636",
+        appId: "1:101979891636:web:5418acc794a8b4c38e74e1",
+        measurementId: "G-MMKZ1WN2D4"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            var user = firebase.auth().currentUser;
+            if (user != null) {
+                window.location.replace('https://mumu.tw/mumu/CantSleep/CantSleeptalkboard.html');
+            }
+        } else {
+            // No user is signed in.
+            console.log("no user");
+        }
+    });
+    /* 直接輸入帳號密碼註冊
+    var btn = document.getElementById('btnSingUp');
+
+    btn.onclick = function() {
+        var email = document.getElementById('mail').value;
+        var password = document.getElementById('password').value;
+        firebase.auth().createUserWithEmailAndPassword(email, password);
+    }
+    */
+    //google sigin
+    var provider = new firebase.auth.GoogleAuthProvider();
+    var btnGooglePopup = document.getElementById('googleSingUpPopup');
+
+    btnGooglePopup.onclick = function() {
+        firebase.auth().signInWithPopup(provider).then(function(result) {
+            // 可以獲得 Google 提供 token，token可透過 Google API 獲得其他數據。  
+            var token = result.credential.accessToken;
+            var user = result.user;
+        });
+    }
+
+    //facebook sigin
+    var providerF = new firebase.auth.FacebookAuthProvider();
+
+    var btnFacebookPopup = document.getElementById('facebookSingUpPopup');
+
+    btnFacebookPopup.onclick = function() {
+        firebase.auth().signInWithPopup(providerF).then(function(result) {
+            var token = result.credential.accessToken;
+            var user = result.user;
+        })
+    }
+
+    //log in
+
+    var btn = document.getElementById('btnLogIn');
+    /* 帳號密碼登入
+    btn.onclick = function() {
+        var email = document.getElementById('mail').value;
+        var password = document.getElementById('password').value;
+        firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorCode);
+            console.log(errorMessage);
+            // ...
+        });
+        var user = firebase.auth().currentUser;
+        if (user) {
+            // User is signed in.
+            alert('登入成功')
+            window.location.replace('https://mumu.tw/mumu/CantSleep/');
+
+        } else {
+            // No user is signed in.
+        }
+    }
+    */
+
+</script>
+
+</html>
