@@ -77,14 +77,13 @@
                     var user = firebase.auth().currentUser;
                     if (user != null) {
                         alert("已登入");
-                        console.log(user.email);
-                        console.log(user.displayName);
+                        //console.log(user.email);
+                        //console.log(user.displayName);
                         name = user.displayName;
                         user_info.user_email = user.email;
                         var ref = firestoreDB.collection('User').doc(user.email);
                         ref.get().then(doc => {
                             if (doc.data() === undefined) {
-                                console.log("first use user");
                                 firestoreDB.collection('User').doc(user.email).set({
                                         user_name: user.displayName,
                                         user_level: 0,
@@ -94,7 +93,7 @@
                                     .then(function() {
                                         user_info.user_name = user.displayName;
                                         user_info.level = 0
-                                        console.log("Document successfully written!");
+                                        //console.log("Document successfully written!");
                                     })
                                     .catch(function(error) {
                                         console.error("Error writing document: ", error);
@@ -108,7 +107,7 @@
                             $level.append('失眠等級:' + user_info.level);
                             firestoreDB.collection("User").doc(user_info.user_email)
                                 .onSnapshot(function(doc) {
-                                    console.log("使用者資料發生變化");
+                                    //console.log("使用者資料發生變化");
                                     user_info.user_name = doc.data().user_name;
                                     user_info.level = doc.data().user_level;
                                     $level.html('');
@@ -127,7 +126,7 @@
                             $rank_board.append('<div id="rank">失眠排行榜<br><br>')
                             //1. 林以軒 lv999<br>
                             querySnapshot.forEach(doc => {
-                                console.log(doc.data().user_name, doc.data().user_level);
+                                //console.log(doc.data().user_name, doc.data().user_level);
                                 $rank_board.append('<br><br>' + order_index + '. ' + doc.data().user_name + ' lv ' + doc.data().user_level);
                                 order_index = order_index + 1;
                             });
@@ -136,8 +135,9 @@
                     }
                 } else {
                     // No user is signed in.
-                    console.log("no user");
-                    window.location.replace('https://mumu.tw/mumu/CantSleep');
+                    //console.log("no user");
+                    alert('請登入');
+                    window.location.replace('./');
                 }
             });
 
@@ -228,7 +228,7 @@
                 $show.html('');
                 var temp_level = 0;
                 for (var i in snapshot.val()) {
-                    console.log(snapshot.val()[i]);
+                    //console.log(snapshot.val()[i]);
                     $show.append('<div class="' + snapshot.val()[i].id + '"><div class="time"><div class="level_show">LV:' + snapshot.val()[i].level + '</div>' + snapshot.val()[i].time + '</div><div class="name">' + snapshot.val()[i].name + ':</div><div class="content">' + snapshot.val()[i].content + '</div>');
                 }
                 $show.scrollTop($show[0].scrollHeight);
@@ -251,7 +251,7 @@
 
             database.limitToLast(1).on('value', function(snapshot) {
                 for (var i in snapshot.val()) {
-                    console.log(snapshot.val()[i]);
+                    //console.log(snapshot.val()[i]);
                     var temp_level = 0;
                     $show.append('<div class="' + snapshot.val()[i].id + '"><div class="time"><div class="level_show">LV:' + snapshot.val()[i].level + '</div>' + snapshot.val()[i].time + '</div><div class="name">' + snapshot.val()[i].name + ':</div><div class="content">' + snapshot.val()[i].content + '</div>');
                 }
@@ -276,12 +276,12 @@
 
             function addlevel() {
                 var ref = firestoreDB.collection('User').doc(user_info.user_email);
-                console.log("add user level ");
+                //console.log("add user level ");
                 user_info.level += 1;
                 ref.update({
                     user_level: user_info.level
                 }).then(() => {
-                    console.log('update data successful');
+                    //console.log('update data successful');
                 });
 
             }
@@ -294,7 +294,7 @@
                 alert('登出成功');
                 window.location.replace('https://mumu.tw/mumu/CantSleep');
                 var user = firebase.auth().currentUser;
-                console.log(user)
+                //console.log(user)
             })
         }
     </script>

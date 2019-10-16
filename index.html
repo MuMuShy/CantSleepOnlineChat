@@ -60,7 +60,7 @@
         if (user) {
             var user = firebase.auth().currentUser;
             if (user != null) {
-                window.location.replace('https://mumu.tw/mumu/CantSleep/CantSleeptalkboard.html');
+                window.location.replace('./CantSleeptalkboard.html');
             }
         } else {
             // No user is signed in.
@@ -81,7 +81,7 @@
     var btnGooglePopup = document.getElementById('googleSingUpPopup');
 
     btnGooglePopup.onclick = function() {
-        firebase.auth().signInWithPopup(provider).then(function(result) {
+        firebase.auth().signInWithRedirect(provider).then(function(result) {
             // 可以獲得 Google 提供 token，token可透過 Google API 獲得其他數據。  
             var token = result.credential.accessToken;
             var user = result.user;
@@ -94,7 +94,7 @@
     var btnFacebookPopup = document.getElementById('facebookSingUpPopup');
 
     btnFacebookPopup.onclick = function() {
-        firebase.auth().signInWithPopup(providerF).then(function(result) {
+        firebase.auth().signInWithRedirect(providerF).then(function(result) {
             var token = result.credential.accessToken;
             var user = result.user;
         })
