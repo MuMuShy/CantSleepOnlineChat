@@ -33,11 +33,14 @@
     <button id="btn_show_rank" class="rankbtn">排行榜</button><br>
     <div id="info">
         <div class="cant_sleep_num" id="level">失眠等級: 1</div>
+        <div class="broad_new_user_online" id="broad_new_user_online">林以軒 也失眠了!</div>
     </div>
     <div id="rank">失眠排行榜<br><br>1. 林以軒 lv999<br>2.陳宣佐 lv100<br>3. 測試3 lv10<br>3. 測試3 lv10<br>3. 測試3 lv10</div>
     <script>
         //- Using an anonymous function:
         var firebase;
+        var firestoreDB;
+        var OnlineStatusDb;
         is_click_rank_board = false;
         const user_info = {
             'user_name': 'null',
@@ -51,8 +54,9 @@
                 $btn_show = $('#btn_show_rank'),
                 $show = $('#show'),
                 $level = $('#level'),
-                $rank_board = $('#rank')
-            ms = new Date().getTime();
+                $rank_board = $('#rank'),
+                $broad_new_user_online = $('#broad_new_user_online')
+                ms = new Date().getTime();
             var config = {
                 apiKey: "AIzaSyACTHxmpvMeD_i7AIO71Y3k4j03y4D24ZU",
                 authDomain: "cantsleep-f8b26.firebaseapp.com",
@@ -66,12 +70,13 @@
             firebase.initializeApp(config);
             firebase.analytics();
             var database = firebase.database().ref();
-            var firestoreDB = firebase.firestore();
+            firestoreDB = firebase.firestore();
             const settings = {
                 /* your settings... */
                 timestampsInSnapshots: true
             };
             firestoreDB.settings(settings);
+            OnlineStatusDb = firestoreDB.collection('OnlineStatus');
             firebase.auth().onAuthStateChanged((user) => {
                 if (user) {
                     var user = firebase.auth().currentUser;
@@ -81,6 +86,7 @@
                         //console.log(user.displayName);
                         name = user.displayName;
                         user_info.user_email = user.email;
+
                         var ref = firestoreDB.collection('User').doc(user.email);
                         ref.get().then(doc => {
                             if (doc.data() === undefined) {
@@ -103,6 +109,21 @@
                                 user_info.user_name = doc.data().user_name;
                                 user_info.level = doc.data().user_level;
                             }
+                            console.log(user_info.user_name);
+                            var update_online_status = firestoreDB.collection('OnlineStatus').doc("new_user");
+                            update_online_status.update({
+                                user_name: user_info.user_name,
+                                user_type: 'normarl'
+                            }).then(() => {
+                                console.log('update online status!');
+                                //這裡 開始接收其他上線資料
+                                firestoreDB.collection("OnlineStatus").doc("new_user")
+                                    .onSnapshot(function(doc) {
+                                        console.log("歡迎: ", doc.data().user_name);
+                                        $broad_new_user_online.html('');
+                                        $broad_new_user_online.append(doc.data().user_name + " 也失眠了");
+                                    });
+                            });
                             $level.html('');
                             $level.append('失眠等級:' + user_info.level);
                             firestoreDB.collection("User").doc(user_info.user_email)
@@ -137,7 +158,10 @@
                     // No user is signed in.
                     //console.log("no user");
                     alert('請登入');
-                    window.location.replace('./');
+                    if (!location.hostname.startsWith('127.')) {
+                        window.location.replace('./');
+                    }
+
                 }
             });
 
@@ -205,8 +229,7 @@
                         var ranking = document.getElementById("rank");
                         ranking.style.visibility = "visible";
                         is_click_rank_board = true;
-                    }
-                    else {
+                    } else {
                         var ranking = document.getElementById("rank");
                         ranking.style.visibility = "hidden";
                         is_click_rank_board = false;
@@ -224,27 +247,31 @@
             }
 
 
-            database.limitToLast(30).once('value', function(snapshot) {
+            database.limitToLast(10).once('value', function(snapshot) {
                 $show.html('');
                 var temp_level = 0;
                 for (var i in snapshot.val()) {
                     //console.log(snapshot.val()[i]);
-                    $show.append('<div class="' + snapshot.val()[i].id + '"><div class="time"><div class="level_show">LV:' + snapshot.val()[i].level + '</div>' + snapshot.val()[i].time + '</div><div class="name">' + snapshot.val()[i].name + ':</div><div class="content">' + snapshot.val()[i].content + '</div>');
+                    $show.append('<div class="' + snapshot.val()[i].email.split('@')[0] + '"><div class="time"><div class="level_show">LV:' + snapshot.val()[i].level + '</div>' + snapshot.val()[i].time + '</div><div class="name">' + snapshot.val()[i].name + ':</div><div class="content">' + snapshot.val()[i].content + '</div>');
+
                 }
+                console.log(typeof user_info.user_email.split('@')[0]);
                 $show.scrollTop($show[0].scrollHeight);
-                $show.find('.id' + ms + ' .name').css({
+                $show.find('.' + user_info.user_email.split('@')[0] + '.name').css({
                     'float': 'right',
                     'padding-top': '12px',
                     'color': '#fc0'
                 });
-                $show.find('.id' + ms + ' .content').css({
+                $show.find('.' + user_info.user_email.split('@')[0] + '.content').css({
                     'float': 'right',
                     'margin-right': '10px'
                 });
-                $show.find('.id' + ms + ' .time').css({
+                $show.find('.' + user_info.user_email.split('@')[0] + '.time').css({
                     'right': '0',
                     'color': '#777'
                 });
+
+
 
             });
 
@@ -274,6 +301,8 @@
 
             });
 
+
+
             function addlevel() {
                 var ref = firestoreDB.collection('User').doc(user_info.user_email);
                 //console.log("add user level ");
@@ -287,15 +316,26 @@
             }
 
 
+
+
+
         });
         var btnLogOut = document.getElementById('logout');
+
         btnLogOut.onclick = function() {
-            firebase.auth().signOut().then(function() {
-                alert('登出成功');
-                window.location.replace('https://mumu.tw/mumu/CantSleep');
-                var user = firebase.auth().currentUser;
-                //console.log(user)
-            })
+            var user = firebase.auth().currentUser;
+            firestoreDB.collection("OnlineStatus").doc(user_info.user_email).delete().then(function() {
+                console.log("Document successfully deleted!");
+                firebase.auth().signOut().then(function() {
+                    alert('登出成功');
+                    window.location.replace('https://mumu.tw/mumu/CantSleep');
+                    var user = firebase.auth().currentUser;
+                    //console.log(user)
+                })
+            }).catch(function(error) {
+                console.error("Error removing document: ", error);
+            });
+
         }
     </script>
 

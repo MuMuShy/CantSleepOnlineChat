@@ -43,6 +43,11 @@
 
 <script>
     // Your web app's Firebase configuration
+    var url = window.location.pathname;
+    if(window.location.protocol!="https:"){
+        console.log("change to https");
+        window.location.replace("https:\\mumu.tw"+url);
+    }
     var firebaseConfig = {
         apiKey: "AIzaSyACTHxmpvMeD_i7AIO71Y3k4j03y4D24ZU",
         authDomain: "cantsleep-f8b26.firebaseapp.com",
