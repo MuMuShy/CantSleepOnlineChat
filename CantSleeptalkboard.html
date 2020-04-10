@@ -36,6 +36,7 @@
         <div class="broad_new_user_online" id="broad_new_user_online">林以軒 也失眠了!</div>
     </div>
     <div id="rank">失眠排行榜<br><br>1. 林以軒 lv999<br>2.陳宣佐 lv100<br>3. 測試3 lv10<br>3. 測試3 lv10<br>3. 測試3 lv10</div>
+    <script src="./config.js"></script>
     <script>
         //- Using an anonymous function:
         var firebase;
@@ -57,16 +58,7 @@
                 $rank_board = $('#rank'),
                 $broad_new_user_online = $('#broad_new_user_online')
                 ms = new Date().getTime();
-            var config = {
-                apiKey: "AIzaSyACTHxmpvMeD_i7AIO71Y3k4j03y4D24ZU",
-                authDomain: "cantsleep-f8b26.firebaseapp.com",
-                databaseURL: "https://cantsleep-f8b26.firebaseio.com",
-                projectId: "cantsleep-f8b26",
-                storageBucket: "cantsleep-f8b26.appspot.com",
-                messagingSenderId: "101979891636",
-                appId: "1:101979891636:web:5418acc794a8b4c38e74e1",
-                measurementId: "G-MMKZ1WN2D4"
-            };
+            
             firebase.initializeApp(config);
             firebase.analytics();
             var database = firebase.database().ref();

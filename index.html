@@ -40,7 +40,9 @@
 <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-auth.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-database.js"></script>
-
+    
+<script src="./config.js"></script>
+    
 <script>
     // Your web app's Firebase configuration
     var url = window.location.pathname;
@@ -48,16 +50,6 @@
         console.log("change to https");
         window.location.replace("https:\\mumu.tw"+url);
     }
-    var firebaseConfig = {
-        apiKey: "AIzaSyACTHxmpvMeD_i7AIO71Y3k4j03y4D24ZU",
-        authDomain: "cantsleep-f8b26.firebaseapp.com",
-        databaseURL: "https://cantsleep-f8b26.firebaseio.com",
-        projectId: "cantsleep-f8b26",
-        storageBucket: "cantsleep-f8b26.appspot.com",
-        messagingSenderId: "101979891636",
-        appId: "1:101979891636:web:5418acc794a8b4c38e74e1",
-        measurementId: "G-MMKZ1WN2D4"
-    };
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
