@@ -1,129 +1,297 @@
 <html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <meta charset="utf-8" />
 
-<head>
-    <meta charset="utf-8">
-    <meta name="description" content="讓失眠的大家能有一個聊天的地方,進來看看吧!">
+    <meta
+      name="description"
+      content="讓失眠的大家能有一個聊天的地方,進來看看吧!"
+    />
+
     <title>失眠聊天室</title>
-    <link rel="stylesheet" type="text/css" href="login.css">
-    <style type="text/css">
 
-    </style>
+    <link rel="stylesheet" type="text/css" href="login.css" />
 
-</head>
+    <style type="text/css"></style>
+  </head>
 
-<body>
-    <div>
-        歡迎~ 目前只開放fb登入 與 google 登入 ~<br>
+  <body>
+    <div data-v-755b21e1="" class="adjustContainerPadding">
+      <div data-v-755b21e1="" class="container">
+        <div data-v-755b21e1="">
+          <div data-v-8d56646e=""><!----></div>
+        </div>
+        <div
+          data-v-755b21e1=""
+          class="d-flex justify-content-between align-items-center my-3"
+        >
+        </div>
+        <div data-v-755b21e1="" class="d-flex">
+          <div data-v-755b21e1="" class="w-fix-360 mx-auto">
+            <div data-v-755b21e1="" class="my-5 pt-md-5 px-3 text-center">
+              <img
+                src="./logo2.png"
+                class="img-fluid"
+              />
+            </div>
+            <!---->
+            <div
+              data-v-755b21e1=""
+            >
+              <div class="px-3 mb-4">
+                <button id="facebookSingUpPopup" href="" class="btn btn-lg btn-block btn-primary"
+                >FaceBook帳號登入</a
+              >
+              </div>
+            </div>
+
+            <div data-v-755b21e1="">
+              <div>
+                <div data-v-8d56646e=""><!----></div>
+              </div>
+              <div class="px-3 mb-4">
+                <button id="googleSingUpPopup" href="" class="btn btn-lg btn-block btn-dark"
+                  >Google帳號登入</a
+                >
+              </div>
+            </div>
+            <p data-v-755b21e1="" class="small">
+              目前失眠聊天室只支援fb & google 登入 為了避免有心人士濫用 id會進行隨機產生 請放心。
+            </p>
+            <!---->
+            <div
+              data-v-755b21e1=""
+              class="
+                flex-wrap
+                d-flex
+                justify-content-between
+                align-items-end
+                my-5
+              "
+            >
+              <div data-v-755b21e1="" class="d-flex flex-wrap mb-2">
+                <small class="text-muted">© MumuSTUDIO</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    
+
     <!-- 帳號密碼登入
+
     <div>
+
         輸入帳號 : <input id="mail" type="email">
+
     </div>
+
     <div>
+
         輸入密碼 : <input id="password" type="password">
+
         <button id="btnLogIn">登入</button>
+
     </div>
+
     <button id="btnSingUp">註冊</button><br>
+
 -->
 
-    <button id="googleSingUpPopup" class="google">Google登入</button>
-    <button id="facebookSingUpPopup" class="fb">FB登入</button>
+    <!--<button id="googleSingUpPopup" class="google">Google登入</button>--> 
+    <!--<button id="facebookSingUpPopup" class="fb">FB登入</button>-->
 
-</body>
-<!-- The core Firebase JS SDK is always required and must be listed first -->
-<script src="https://www.gstatic.com/firebasejs/7.2.0/firebase-app.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 
-<!-- TODO: Add SDKs for Firebase products that you want to use
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+
+  <script src="https://www.gstatic.com/firebasejs/7.2.0/firebase-app.js"></script>
+
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+
      https://firebase.google.com/docs/web/setup#available-libraries -->
-<script src="https://www.gstatic.com/firebasejs/7.2.0/firebase-analytics.js"></script>
-<!-- Add Firebase products that you want to use -->
-<script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-auth.js"></script>
 
-<script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-database.js"></script>
-    
-<script src="./config.js"></script>
-    
-<script>
+  <script src="https://www.gstatic.com/firebasejs/7.2.0/firebase-analytics.js"></script>
+
+  <!-- Add Firebase products that you want to use -->
+
+  <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-auth.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-database.js"></script>
+
+  <script src="./config.js"></script>
+
+  <script>
     // Your web app's Firebase configuration
+
     var url = window.location.pathname;
-    if(window.location.protocol!="https:"){
-        console.log("change to https");
-        window.location.replace("https:\\mumu.tw"+url);
+    console.log(window.location.href);
+
+    if (
+      window.location.protocol != "https:" &&
+      window.location.href != "http://127.0.0.1:5500/"
+    ) {
+      console.log("change to https");
+
+      window.location.replace("https:\\mumu.tw" + url);
     }
+
     // Initialize Firebase
+
     firebase.initializeApp(firebaseConfig);
+
     firebase.analytics();
+
     firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-            var user = firebase.auth().currentUser;
-            if (user != null) {
-                window.location.replace('./CantSleeptalkboard.html');
-            }
-        } else {
-            // No user is signed in.
-            console.log("no user");
+      if (user) {
+        var user = firebase.auth().currentUser;
+
+        if (user != null) {
+          window.location.replace("./CantSleeptalkboard.html");
         }
+      } else {
+        // No user is signed in.
+
+        console.log("no user");
+      }
     });
+
     /* 直接輸入帳號密碼註冊
+
     var btn = document.getElementById('btnSingUp');
 
-    btn.onclick = function() {
-        var email = document.getElementById('mail').value;
-        var password = document.getElementById('password').value;
-        firebase.auth().createUserWithEmailAndPassword(email, password);
-    }
-    */
-    //google sigin
-    var provider = new firebase.auth.GoogleAuthProvider();
-    var btnGooglePopup = document.getElementById('googleSingUpPopup');
 
-    btnGooglePopup.onclick = function() {
-        firebase.auth().signInWithRedirect(provider).then(function(result) {
-            // 可以獲得 Google 提供 token，token可透過 Google API 獲得其他數據。  
-            var token = result.credential.accessToken;
-            var user = result.user;
-        });
+
+    btn.onclick = function() {
+
+        var email = document.getElementById('mail').value;
+
+        var password = document.getElementById('password').value;
+
+        firebase.auth().createUserWithEmailAndPassword(email, password);
+
     }
+
+    */
+
+    //google sigin
+
+    var provider = new firebase.auth.GoogleAuthProvider();
+
+    var btnGooglePopup = document.getElementById("googleSingUpPopup");
+
+    btnGooglePopup.onclick = function () {
+      firebase
+        .auth()
+        .signInWithRedirect(provider)
+        .then(function (result) {
+          // 可以獲得 Google 提供 token，token可透過 Google API 獲得其他數據。
+
+          var token = result.credential.accessToken;
+
+          var user = result.user;
+        });
+    };
 
     //facebook sigin
+
     var providerF = new firebase.auth.FacebookAuthProvider();
 
-    var btnFacebookPopup = document.getElementById('facebookSingUpPopup');
+    var btnFacebookPopup = document.getElementById("facebookSingUpPopup");
 
-    btnFacebookPopup.onclick = function() {
-        firebase.auth().signInWithRedirect(providerF).then(function(result) {
-            var token = result.credential.accessToken;
-            var user = result.user;
-        })
-    }
+    btnFacebookPopup.onclick = function () {
+      firebase
+        .auth()
+        .signInWithRedirect(providerF)
+        .then(function (result) {
+          var token = result.credential.accessToken;
+
+          var user = result.user;
+        });
+    };
 
     //log in
 
-    var btn = document.getElementById('btnLogIn');
+    var btn = document.getElementById("btnLogIn");
+
     /* 帳號密碼登入
+
     btn.onclick = function() {
+
         var email = document.getElementById('mail').value;
+
         var password = document.getElementById('password').value;
+
         firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+
             // Handle Errors here.
+
             var errorCode = error.code;
+
             var errorMessage = error.message;
+
             console.log(errorCode);
+
             console.log(errorMessage);
+
             // ...
+
         });
+
         var user = firebase.auth().currentUser;
+
         if (user) {
+
             // User is signed in.
+
             alert('登入成功')
+
             window.location.replace('https://mumu.tw/mumu/CantSleep/');
 
+
+
         } else {
+
             // No user is signed in.
+
         }
+
     }
+
     */
 
-</script>
-
+    document.body.onkeydown = function(e){
+        var keyCode = e.keyCode || e.which || e.charCode;
+        var ctrlKey = e.ctrlKey || e.metaKey;
+        if(ctrlKey && (keyCode == 83 || keyCode == 85 || keyCode == 73)) {
+        e.preventDefault();
+        return false;
+        }else if(keyCode && keyCode == 123){
+        return false;
+        }
+        }
+        
+  </script>
 </html>

@@ -1,345 +1,710 @@
 <html>
 
+
+
 <head>
+
     <meta charset="utf-8">
+
     <meta name="description" content="讓失眠的大家能有一個聊天的地方,進來看看吧!">
+
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
     <title>失眠聊天室</title>
+
     <link rel="stylesheet" type="text/css" href="talkboard.css">
+
     <script src="https://www.gstatic.com/firebasejs/3.6.2/firebase.js"></script>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+
 
 </head>
 
+
+
 <body>
+    
+
     <audio id="alert_audio">
+
         <source src="beep.ogg" type="audio/ogg">
+
         <source src="beep.mp3" type="audio/mpeg">
+
     </audio>
+
     <div id="logoutdiv">
+
         <button id="logout" class="logout">Logout</button><br>
+
     </div>
+
     <div id="im">
+
         <div id="input">
+
             <div>
+
                 <span>內容：</span><input id="content">
+
             </div>
+
             <button id="btn" class="sendbtn">送出</button><br>
+
+
 
         </div>
 
+
+
         <div id="show"></div>
+
     </div>
+
     <button id="btn_show_rank" class="rankbtn">排行榜</button><br>
+
     <div id="info">
+
         <div class="cant_sleep_num" id="level">失眠等級: 1</div>
+
         <div class="broad_new_user_online" id="broad_new_user_online">林以軒 也失眠了!</div>
+
     </div>
+
     <div id="rank">失眠排行榜<br><br>1. 林以軒 lv999<br>2.陳宣佐 lv100<br>3. 測試3 lv10<br>3. 測試3 lv10<br>3. 測試3 lv10</div>
+
     <script src="./config.js"></script>
+
     <script>
+
         //- Using an anonymous function:
+
         var firebase;
+
         var firestoreDB;
+
         var OnlineStatusDb;
+
         is_click_rank_board = false;
+
         const user_info = {
+
             'user_name': 'null',
+
             'level': 0,
+
             'user_email': ''
+
         }
+
         $(function() {
+
             var $name = "",
+
                 $content = $('#content'),
+
                 $btn = $('#btn'),
+
                 $btn_show = $('#btn_show_rank'),
+
                 $show = $('#show'),
+
                 $level = $('#level'),
+
                 $rank_board = $('#rank'),
+
                 $broad_new_user_online = $('#broad_new_user_online')
+
                 ms = new Date().getTime();
+
             
+
             firebase.initializeApp(config);
+
             firebase.analytics();
+
             var database = firebase.database().ref();
+
             firestoreDB = firebase.firestore();
+
             const settings = {
+
                 /* your settings... */
+
                 timestampsInSnapshots: true
+
             };
+
             firestoreDB.settings(settings);
+
             OnlineStatusDb = firestoreDB.collection('OnlineStatus');
+
             firebase.auth().onAuthStateChanged((user) => {
+
                 if (user) {
+
                     var user = firebase.auth().currentUser;
+
                     if (user != null) {
+
                         alert("已登入");
+
                         //console.log(user.email);
+
                         //console.log(user.displayName);
+
                         name = user.displayName;
+
                         user_info.user_email = user.email;
 
+
+
                         var ref = firestoreDB.collection('User').doc(user.email);
+
                         ref.get().then(doc => {
+
                             if (doc.data() === undefined) {
+
                                 firestoreDB.collection('User').doc(user.email).set({
+
                                         user_name: user.displayName,
+
                                         user_level: 0,
+
                                         user_lastlogin_time: Date.now(),
+
                                         user_lastlogout_time: Date.now()
+
                                     })
+
                                     .then(function() {
+
                                         user_info.user_name = user.displayName;
+
                                         user_info.level = 0
+
                                         //console.log("Document successfully written!");
+
                                     })
+
                                     .catch(function(error) {
+
                                         console.error("Error writing document: ", error);
+
                                     });
 
+
+
                             } else {
+
                                 user_info.user_name = doc.data().user_name;
+
                                 user_info.level = doc.data().user_level;
+
                             }
+
                             console.log(user_info.user_name);
+
                             var update_online_status = firestoreDB.collection('OnlineStatus').doc("new_user");
+
                             update_online_status.update({
+
                                 user_name: user_info.user_name,
+
                                 user_type: 'normarl'
+
                             }).then(() => {
+
                                 console.log('update online status!');
+
                                 //這裡 開始接收其他上線資料
+
                                 firestoreDB.collection("OnlineStatus").doc("new_user")
+
                                     .onSnapshot(function(doc) {
+
                                         console.log("歡迎: ", doc.data().user_name);
+
                                         $broad_new_user_online.html('');
+
                                         $broad_new_user_online.append(doc.data().user_name + " 也失眠了");
+
                                     });
+
                             });
+
                             $level.html('');
+
                             $level.append('失眠等級:' + user_info.level);
+
                             firestoreDB.collection("User").doc(user_info.user_email)
+
                                 .onSnapshot(function(doc) {
+
                                     //console.log("使用者資料發生變化");
+
                                     user_info.user_name = doc.data().user_name;
+
                                     user_info.level = doc.data().user_level;
+
                                     $level.html('');
+
                                     $level.append('失眠等級:' + user_info.level);
+
                                 });
+
                             var addlevel_interval = setInterval(function() {
+
                                 addlevel();
+
                             }, 60000);
 
 
-                        });
-                        var ranking = firestoreDB.collection('User');
-                        ranking.orderBy('user_level', 'desc').limit(5).get().then(querySnapshot => {
-                            var order_index = 1;
-                            $rank_board.html('');
-                            $rank_board.append('<div id="rank">失眠排行榜<br><br>')
-                            //1. 林以軒 lv999<br>
-                            querySnapshot.forEach(doc => {
-                                //console.log(doc.data().user_name, doc.data().user_level);
-                                $rank_board.append('<br><br>' + order_index + '. ' + doc.data().user_name + ' lv ' + doc.data().user_level);
-                                order_index = order_index + 1;
-                            });
+
+
+
                         });
 
+                        var ranking = firestoreDB.collection('User');
+
+                        ranking.orderBy('user_level', 'desc').limit(5).get().then(querySnapshot => {
+
+                            var order_index = 1;
+
+                            $rank_board.html('');
+
+                            $rank_board.append('<div id="rank">失眠排行榜<br><br>')
+
+                            //1. 林以軒 lv999<br>
+
+                            querySnapshot.forEach(doc => {
+
+                                //console.log(doc.data().user_name, doc.data().user_level);
+
+                                $rank_board.append('<br><br>' + order_index + '. ' + doc.data().user_name + ' lv ' + doc.data().user_level);
+
+                                order_index = order_index + 1;
+
+                            });
+
+                        });
+
+
+
                     }
+
                 } else {
+
                     // No user is signed in.
+
                     //console.log("no user");
+
                     alert('請登入');
+
                     if (!location.hostname.startsWith('127.')) {
+
                         window.location.replace('./');
+
                     }
+
+
 
                 }
+
             });
+
+
+
 
 
             $btn.on('click', write);
+
             $content.on('keydown', function(e) {
+
                 if (e.keyCode == 13) {
+
                     write();
+
                 }
+
             });
 
+
+
             function write() {
+
                 var date = new Date();
+
                 var h = date.getHours();
+
                 var m = date.getMinutes();
+
                 var s = date.getSeconds();
+
                 if (h < 10) {
+
                     h = '0' + h;
+
                 }
+
                 if (m < 10) {
+
                     m = '0' + m;
+
                 }
+
                 if (s < 10) {
+
                     s = '0' + s;
+
                 }
+
                 var now = h + ':' + m + ':' + s;
+                var _postname="";
+                var totalnamelength = name.length;
+                for(var i=0;i<totalnamelength;i++){
+                    if(i==0){
+                        _postname+=name[0];
+                    }else{
+                        _postname+="X";
+                    }
+                }
                 var postData = {
-                    name: name,
+
+                    name: _postname,
+
                     content: $('#content').val(),
+
                     time: now,
+
                     id: 'id' + ms,
+
                     email: user_info.user_email,
+
                     level: user_info.level
+
                 };
+
                 database.push(postData);
+
                 $content.val('');
 
+
+
             }
+
+
 
             function isMobile() {
+
                 try {
+
                     document.createEvent("TouchEvent");
+
                     return true;
+
                 } catch (e) {
+
                     return false;
+
                 }
 
+
+
             }
+
             if (isMobile()) {
+
                 console.log('手機');
+
                 $btn_show.on('click', show_rank);
+
             } else {
+
                 console.log('電腦');
+
                 $btn_show.on('mousedown', show_rank);
+
                 $btn_show.on('mouseup', hide_rank);
+
                 $btn_show.on('mouseleave', hide_rank);
+
             }
+
+
+
+
+
 
 
 
 
             function show_rank() {
+
                 if (isMobile()) {
+
                     if (!is_click_rank_board) {
+
                         var ranking = document.getElementById("rank");
+
                         ranking.style.visibility = "visible";
+
                         is_click_rank_board = true;
+
                     } else {
+
                         var ranking = document.getElementById("rank");
+
                         ranking.style.visibility = "hidden";
+
                         is_click_rank_board = false;
+
                     }
+
                 } else {
+
                     var ranking = document.getElementById("rank");
+
                     ranking.style.visibility = "visible";
+
                 }
 
+
+
             }
 
+
+
             function hide_rank() {
+
                 var ranking = document.getElementById("rank");
+
                 ranking.style.visibility = "hidden";
+
             }
+
+
+
 
 
             database.limitToLast(10).once('value', function(snapshot) {
+
                 $show.html('');
+
                 var temp_level = 0;
+
                 for (var i in snapshot.val()) {
+
                     //console.log(snapshot.val()[i]);
+
                     $show.append('<div class="' + snapshot.val()[i].email.split('@')[0] + '"><div class="time"><div class="level_show">LV:' + snapshot.val()[i].level + '</div>' + snapshot.val()[i].time + '</div><div class="name">' + snapshot.val()[i].name + ':</div><div class="content">' + snapshot.val()[i].content + '</div>');
 
+
+
                 }
+
                 console.log(typeof user_info.user_email.split('@')[0]);
+
                 $show.scrollTop($show[0].scrollHeight);
+
                 $show.find('.' + user_info.user_email.split('@')[0] + '.name').css({
+
                     'float': 'right',
+
                     'padding-top': '12px',
+
                     'color': '#fc0'
+
                 });
+
                 $show.find('.' + user_info.user_email.split('@')[0] + '.content').css({
+
                     'float': 'right',
+
                     'margin-right': '10px'
+
                 });
+
                 $show.find('.' + user_info.user_email.split('@')[0] + '.time').css({
+
                     'right': '0',
+
                     'color': '#777'
+
                 });
+
+
+
+
 
 
 
             });
+
+
+
 
 
             database.limitToLast(1).on('value', function(snapshot) {
+
                 for (var i in snapshot.val()) {
+
                     //console.log(snapshot.val()[i]);
+
                     var temp_level = 0;
+
                     $show.append('<div class="' + snapshot.val()[i].id + '"><div class="time"><div class="level_show">LV:' + snapshot.val()[i].level + '</div>' + snapshot.val()[i].time + '</div><div class="name">' + snapshot.val()[i].name + ':</div><div class="content">' + snapshot.val()[i].content + '</div>');
+
                 }
+
                 $show.scrollTop($show[0].scrollHeight);
+
                 $show.find('.id' + ms + ' .name').css({
+
                     'float': 'right',
+
                     'padding-top': '12px',
+
                     'color': '#fc0'
+
                 });
+
                 $show.find('.id' + ms + ' .content').css({
+
                     'float': 'right',
+
                     'margin-right': '10px'
+
                 });
+
                 $show.find('.id' + ms + ' .time').css({
+
                     'right': '0',
+
                     'color': '#777'
+
                 });
+
                 var alert_sound = document.getElementById("alert_audio");
+
                 alert_sound.play();
 
+
+
             });
+
+
+
+
 
 
 
             function addlevel() {
+
                 var ref = firestoreDB.collection('User').doc(user_info.user_email);
+
                 //console.log("add user level ");
+
                 user_info.level += 1;
+
                 ref.update({
+
                     user_level: user_info.level
+
                 }).then(() => {
+
                     //console.log('update data successful');
+
                 });
 
+
+
             }
+
+
+
+
+
+
 
 
 
 
 
         });
+
         var btnLogOut = document.getElementById('logout');
 
+
+
         btnLogOut.onclick = function() {
+
             var user = firebase.auth().currentUser;
+
             firestoreDB.collection("OnlineStatus").doc(user_info.user_email).delete().then(function() {
+
                 console.log("Document successfully deleted!");
+
                 firebase.auth().signOut().then(function() {
+
                     alert('登出成功');
+
                     window.location.replace('https://mumu.tw/mumu/CantSleep');
+
                     var user = firebase.auth().currentUser;
+
                     //console.log(user)
+
                 })
+
             }).catch(function(error) {
+
                 console.error("Error removing document: ", error);
+
             });
 
+
+
         }
+
+        document.body.onkeydown = function(e){
+        var keyCode = e.keyCode || e.which || e.charCode;
+        var ctrlKey = e.ctrlKey || e.metaKey;
+        if(ctrlKey && (keyCode == 83 || keyCode == 85 || keyCode == 73)) {
+        e.preventDefault();
+        return false;
+        }else if(keyCode && keyCode == 123){
+        return false;
+        }
+        }
+
     </script>
 
 
+
+
+
 </body>
+
 <!-- The core Firebase JS SDK is always required and must be listed first -->
+
 <script src="https://www.gstatic.com/firebasejs/7.2.0/firebase-app.js"></script>
 
+
+
 <!-- TODO: Add SDKs for Firebase products that you want to use
+
      https://firebase.google.com/docs/web/setup#available-libraries -->
+
 <script src="https://www.gstatic.com/firebasejs/7.2.0/firebase-analytics.js"></script>
+
 <!-- Add Firebase products that you want to use -->
+
 <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-auth.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-database.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/5.5.3/firebase-firestore.js"></script></html>
+
